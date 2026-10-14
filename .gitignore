@@ -1,6 +1,22 @@
+# 虚拟环境
 venv/
+.venv/
+
+# 密钥文件（重点！防止密钥上传）
 .env
+.env.txt
+
+# 向量数据库，本地生成，不上传
+chroma_db/
+
+# Python缓存
 __pycache__/
 *.pyc
-chroma_db/
-data/raw/*.pdf
+*.pyo
+
+# IDE配置
+.idea/
+.vscode/
+
+# PDF原始文档
+data/pdf/*.pdf
