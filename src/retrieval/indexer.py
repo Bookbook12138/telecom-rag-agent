@@ -3,34 +3,40 @@ import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 from src.config import settings
 from src.ingestion.parse import load_pdf_folder
-from src.ingestion.chunker import split_text
+from src.ingestion.chunker import split_by_sections
+
 
 def build_vector_db(pdf_dir: Path):
-    # 使用本地BGE模型，不需要远程API
-    embedding_fn = SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+    embedding_fn = SentenceTransformerEmbeddingFunction(
+        model_name="BAAI/bge-small-zh-v1.5"
+    )
     client = chromadb.PersistentClient(path=str(settings.chroma_db_path))
-    collection = client.get_or_create_collection(
+
+    # 删除旧 collection，避免重复入库
+    try:
+        client.delete_collection(settings.collection_name)
+    except Exception:
+        pass
+    collection = client.create_collection(
         name=settings.collection_name,
-        embedding_function=embedding_fn
+        embedding_function=embedding_fn,
+        metadata={"hnsw:space": "cosine"}
     )
 
-    doc_list = load_pdf_folder(pdf_dir)
-    ids = []
-    texts = []
-    metadatas = []
+    ids, texts, metadatas = [], [], []
+    for file_name, full_text in load_pdf_folder(pdf_dir):
+        chunks = split_by_sections(full_text, source=file_name)
+        for c in chunks:
+            header = f"[{c.source} | Section {c.section_id} {c.section_title}]"
+            ids.append(f"{c.source}-{c.chunk_index}")
+            texts.append(f"{header}\n{c.text}")
+            metadatas.append({
+                "source": c.source,
+                "section_id": c.section_id,
+                "section_title": c.section_title,
+                "chunk_index": c.chunk_index
+            })
 
-    for file_name, full_text in doc_list:
-        chunks = split_text(full_text)
-        for idx, chunk in enumerate(chunks):
-            chunk_id = f"{file_name}-{idx}"
-            ids.append(chunk_id)
-            texts.append(chunk)
-            metadatas.append({"source": file_name})
-
-    collection.add(
-        documents=texts,
-        ids=ids,
-        metadatas=metadatas
-    )
-    print(f"✅ 成功入库，共 {len(texts)} 个文本块")
+    collection.add(documents=texts, ids=ids, metadatas=metadatas)
+    print(f"✅ 成功入库，共 {len(texts)} 个章节感知 chunk")
     return collection
