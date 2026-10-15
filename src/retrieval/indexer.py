@@ -12,11 +12,18 @@ def build_vector_db(pdf_dir: Path):
     )
     client = chromadb.PersistentClient(path=str(settings.chroma_db_path))
 
-    # 删除旧 collection，避免重复入库
+    # 已存在则直接加载，不重建
     try:
-        client.delete_collection(settings.collection_name)
+        collection = client.get_collection(
+            name=settings.collection_name,
+            embedding_function=embedding_fn
+        )
+        print(f"✅ 已加载现有 collection: {settings.collection_name}")
+        return collection
     except Exception:
         pass
+
+    # 不存在则新建
     collection = client.create_collection(
         name=settings.collection_name,
         embedding_function=embedding_fn,
@@ -24,7 +31,7 @@ def build_vector_db(pdf_dir: Path):
     )
 
     ids, texts, metadatas = [], [], []
-    for file_name, full_text in load_pdf_folder(pdf_dir):
+    for file_name, full_text in load_pdf_folder(pdf_dir):Get-ChildItem -Force | Select-Object Name
         chunks = split_by_sections(full_text, source=file_name)
         for c in chunks:
             header = f"[{c.source} | Section {c.section_id} {c.section_title}]"

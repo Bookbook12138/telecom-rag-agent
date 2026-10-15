@@ -15,6 +15,6 @@ class Settings:
         self.collection_name = "telecom_docs"
         self.chroma_db_path = Path("./chroma_db")
         self.llm_model = os.getenv("DEEPSEEK_LLM_MODEL", "deepseek-chat")
-        self.embedding_model = "all-MiniLM-L6-v2"
+        self.embedding_model = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-zh-v1.5")
 
 settings = Settings()

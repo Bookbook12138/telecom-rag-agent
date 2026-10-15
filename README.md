@@ -11,7 +11,7 @@ This RAG agent is tailored for communication engineering documents. It implement
 - **Vector store**: Chroma
 - **LLM**: DeepSeek API (`deepseek-chat`)
 - **Embedding**: Sentence-Transformer (`BAAI/bge-small-zh-v1.5`)
-- **Interface**: Streamlit
+- **Interface**: Command-line (CLI)
 - **PDF parsing**: pypdf
 
 ## Evaluation
@@ -21,9 +21,9 @@ Test set: 8 domain-specific queries from a 6G spectrum management survey paper (
 Metric: Recall@5 (whether the expected section appears in top-5 retrieved chunks) and hallucination refusal rate.
 
 | Version | Embedding Model | Recall@5 | Refusal Rate |
-|---|---|---|---|
+| ---- | ---- | ---- | ---- |
 | v1 | all-MiniLM-L6-v2 (English) | 0.50 | 0.50 |
-| v2 | BAAI/bge-small-zh-v1.5 (Chinese) | **0.67** | **1.00** |
+| v2 | BAAI/bge-small-zh-v1.5 (Chinese) | 0.67 | 1.00 |
 
 Key fixes in v2:
 - Switched to a Chinese-optimized embedding model for Chinese technical papers
@@ -46,16 +46,18 @@ pip install -r requirements.txt
 
 3. Put your PDF files into `data/pdf/`.
 
-4. Build the vector database:
+4. (Optional) Pre-build the vector database:
 
 ```
 python -c "from pathlib import Path; from src.retrieval.indexer import build_vector_db; build_vector_db(Path('data/pdf'))"
 ```
 
-5. Run the app:
+This step is optional — `app.py` will build the vector database automatically on first run.
+
+5. Run the QA agent:
 
 ```
-streamlit run app.py
+python app.py
 ```
 
 ## Evaluation Script
