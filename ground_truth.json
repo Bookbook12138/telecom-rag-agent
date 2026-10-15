@@ -1,0 +1,61 @@
+{
+  "paper": "面向6G的内生智能频谱管控关键技术研究",
+  "queries": [
+    {
+      "question": "本文提出的核心技术是什么？",
+      "expected_sections": [
+        "2"
+      ],
+      "note": "三层频谱管控分析框架：频谱感知层、动态接入层、安全保障层"
+    },
+    {
+      "question": "该方案解决了哪些现存问题？",
+      "expected_sections": [
+        "0",
+        "1",
+        "6"
+      ],
+      "note": "频谱稀缺、静态划分利用率低、潜在挑战"
+    },
+    {
+      "question": "该方法的局限性有哪些？",
+      "expected_sections": [
+        "6"
+      ],
+      "note": "实时性约束、能效瓶颈、干扰协调、内生安全威胁、标准化缺失"
+    },
+    {
+      "question": "该方案相比其他基线方案的优势是什么？",
+      "expected_sections": [
+        "3.2",
+        "4.2"
+      ],
+      "note": "机器学习 CSS 相比传统能量检测；DRL 相比 Myopic、Whittle Index"
+    },
+    {
+      "question": "文章结论部分有哪些展望？",
+      "expected_sections": [
+        "6",
+        "7"
+      ],
+      "note": "潜在挑战与未来展望 + 结束语"
+    },
+    {
+      "question": "区块链在频谱管控中的共识机制有哪些？",
+      "expected_sections": [
+        "5.2"
+      ],
+      "note": "PoW、PoS、PBFT、基于干扰的共识、分布式感知证明、PoT"
+    },
+    {
+      "question": "实验的数据集与评价指标是什么？",
+      "expected_sections": [],
+      "note": "幻觉测试：这是综述，没有实验章节"
+    },
+    {
+      "question": "5G网络的商业部署成本是多少？",
+      "expected_sections": [],
+      "note": "幻觉测试：文档中无此信息"
+    }
+  ]
+}
